@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <title>法規更新中心</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+  <div id="app" class="max-w-4xl mx-auto p-6">
+    <h1 class="text-2xl font-bold mb-4">📜 食品包裝法規更新中心</h1>
+
+    <div v-if="laws.length">
+      <div v-for="law in laws" :key="law.id" class="bg-white shadow p-4 rounded mb-4">
+        <h2 class="text-lg font-semibold">{{ law.title }}</h2>
+        <p class="text-sm text-gray-500">更新日期：{{ law.date }}</p>
+        <div class="mt-2">
+          <p class="text-red-600 font-bold">變更前：</p>
+          <pre class="bg-red-100 p-2 whitespace-pre-wrap">{{ law.old }}</pre>
+          <p class="text-green-600 font-bold mt-2">變更後：</p>
+          <pre class="bg-green-100 p-2 whitespace-pre-wrap">{{ law.new }}</pre>
+        </div>
+      </div>
+    </div>
+    <p v-else>目前沒有更新的法規。</p>
+  </div>
+
+  <script>
+    const { createApp } = Vue;
+    createApp({
+      data() {
+        return {
+          laws: []
+        };
+      },
+      mounted() {
+        fetch("../data/diff/latest.json")
+          .then(res => res.json())
+          .then(data => { this.laws = data; });
+      }
+    }).mount("#app");
+  </script>
+</body>
+</html>
